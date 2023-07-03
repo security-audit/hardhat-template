@@ -1,6 +1,6 @@
 import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
 
-import type { GameItem, Sign } from "../types/";
+import type { GameItem, GoldTraceability, Sign } from "../types/";
 // import type { Sign } from "../types/";
 import type { Greeter } from "../types/Greeter";
 
@@ -13,6 +13,7 @@ declare module "mocha" {
     Sign: Sign;
     loadFixture: <T>(fixture: Fixture<T>) => Promise<T>;
     signers: Signers;
+    GoldTraceability: GoldTraceability;
   }
 }
 

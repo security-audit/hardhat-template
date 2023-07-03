@@ -3,8 +3,8 @@ import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signe
 import { ethers } from "hardhat";
 
 import type { Signers } from "../types";
-import { ping } from "./Sign.behavior";
-import { deployGreeterFixture } from "./Sign.fixture";
+import { create, deleteGold } from "./Gold.behavior";
+import { deployGreeterFixture } from "./Gold.fixture";
 
 describe("Sign Unit tests", function () {
   before(async function () {
@@ -16,15 +16,24 @@ describe("Sign Unit tests", function () {
     this.loadFixture = loadFixture;
   });
 
-  describe("Sign", function () {
+  describe("Create", function () {
     beforeEach(async function () {
       // const { Sign } = await this.loadFixture(deployGreeterFixture);
-      this.Sign = await this.loadFixture(deployGreeterFixture);
+      this.GoldTraceability = await this.loadFixture(deployGreeterFixture);
     });
 
-    ping();
+    create();
 
     // shouldBehaveLikeGreeter();
     // shoudBehavelRest();
+  });
+
+  describe("Delete", function () {
+    beforeEach(async function () {
+      // const { Sign } = await this.loadFixture(deployGreeterFixture);
+      this.GoldTraceability = await this.loadFixture(deployGreeterFixture);
+    });
+
+    deleteGold();
   });
 });

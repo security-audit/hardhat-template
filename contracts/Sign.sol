@@ -4,6 +4,7 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import { console } from "hardhat/console.sol";
 
 contract Sign {
+    using ECDSA for bytes32;
     string public greeting;
     string private _init;
 
@@ -50,8 +51,9 @@ contract Sign {
         string memory str2,
         bytes memory signature
     ) public pure returns (address) {
-        bytes32 hash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(str1, str2)));
-        return ECDSA.recover(hash, signature);
+        // bytes32 hash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(str1, str2)));
+        // return ECDSA.recover(hash, signature);
+        return keccak256(abi.encodePacked(str1, str2)).toEthSignedMessageHash().recover(signature);
     }
 
     function getEtherSignHash(string memory msg) public pure returns (bytes32) {
