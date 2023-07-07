@@ -29,18 +29,34 @@ library ArrayUtils {
 
         return newArray;
     }
+
+    function append(uint256[] memory A, uint256 B) internal pure returns (uint256[] memory) {
+        uint256[] memory newAddresses = new uint256[](A.length + 1);
+        for (uint256 i = 0; i < A.length; i++) {
+            newAddresses[i] = A[i];
+        }
+        newAddresses[A.length] = B;
+        return newAddresses;
+    }
 }
 
 contract GoldTraceability is Ownable {
     using ECDSA for bytes32;
+    enum GoldType {
+        GoldBlock,
+        GoldProduct
+    }
 
     struct GoldBlock {
+        string id; // 编号字段
         string producer;
         string location;
         uint256 weight;
         uint256 timestamp;
         address owner;
         uint256[] transactionIds;
+        uint256[] parentIds; // 关联的黄金块 ID 数组
+        GoldType goldType; // 是否为黄金工艺品
     }
 
     struct Transaction {
@@ -50,6 +66,7 @@ contract GoldTraceability is Ownable {
         uint256 timestamp;
     }
 
+    mapping(string => uint256) private usedIds; // 编号到区块 ID 的映射关系
     mapping(uint256 => Transaction) public transactions;
     mapping(uint256 => GoldBlock) public goldBlocks;
     mapping(address => uint256[]) private goldBlocksByOwner;
@@ -74,28 +91,53 @@ contract GoldTraceability is Ownable {
         _;
     }
 
+    modifier onlyExistingBlock(uint256 blockId) {
+        require(goldBlocks[blockId].owner != address(0), "Gold block does not exist");
+        _;
+    }
+
     function createGoldBlock(
+        string memory id,
         string memory producer,
         string memory location,
         uint256 weight,
         uint256 timestamp,
+        uint256[] memory parentIds,
+        GoldType goldType,
         bytes memory signature
     ) external {
-        address signer = keccak256(abi.encodePacked(producer, location, weight, timestamp))
+        require(bytes(id).length > 0, "Invalid ID");
+        require(usedIds[id] == 0, "ID already used");
+
+        address signer = keccak256(abi.encodePacked(id, producer, location, weight, timestamp, parentIds, goldType))
             .toEthSignedMessageHash()
             .recover(signature);
         require(signer != address(0), "Invalid signature");
         require(signer == msg.sender, "Invalid signature");
 
-        GoldBlock memory newGoldBlock = GoldBlock(producer, location, weight, timestamp, signer, new uint256[](0));
+        GoldBlock memory newGoldBlock = GoldBlock(
+            id,
+            producer,
+            location,
+            weight,
+            timestamp,
+            signer,
+            new uint256[](0),
+            parentIds,
+            goldType
+        );
         goldBlocks[nextBlockId] = newGoldBlock;
         goldBlocksByOwner[signer].push(nextBlockId);
 
+        usedIds[id] = nextBlockId;
         emit GoldBlockCreated(nextBlockId, producer, location, weight, timestamp, signer);
         nextBlockId++;
     }
 
-    function transferGoldBlock(uint256 blockId, address to) external onlyAuthorized(blockId) {
+    function transferGoldBlock(
+        uint256 blockId,
+        address to
+    ) external onlyExistingBlock(blockId) onlyAuthorized(blockId) {
         // require(goldBlocks[blockId].owner != address(0), "Gold block does not exist");
         // require(goldBlocks[blockId].owner == msg.sender, "Not the owner of the gold block");
         address from = goldBlocks[blockId].owner;
@@ -152,7 +194,7 @@ contract GoldTraceability is Ownable {
         nextTransactionId++;
     }
 
-    function authorizeUsers(uint256 blockId, address[] memory users) external onlyOwnerAuthorized(blockId) {
+    function grantAccess(uint256 blockId, address[] memory users) external onlyOwnerAuthorized(blockId) {
         for (uint256 i = 0; i < users.length; i++) {
             authorizedUsers[blockId][users[i]] = true;
             emit UserAuthorized(blockId, users[i]);
@@ -164,6 +206,48 @@ contract GoldTraceability is Ownable {
             authorizedUsers[blockId][users[i]] = false;
             emit AuthorizationRevoked(blockId, users[i]);
         }
+    }
+
+    // struct ParentInfo {
+    //     uint256 blockId;
+    //     uint256[] parents;
+    // }
+
+    // function getParentBlocks(uint256 blockId) external view returns (uint256[] memory) {
+    //     uint256[] memory parentBlocks;
+    //     // uint256[] memory currentBlockId = new uint256[](blockId);
+    //     // currentBlockId.push(blockId);
+    //     ParentInfo[] storage foundIds;
+    //     // while (true) {
+    //     for (uint j = 0; j < blockIds.length; j++) {
+    //         // uint256[] storage nextIds = goldBlocks[currentBlockId[j]].parentIds;
+    //         uint256[] memory parentIds = goldBlocks[blockIds[j]].parentIds;
+
+    //         foundIds.push(ParentInfo(blockIds[j], _getParents(parentIds)));
+    //     }
+    //     // }
+    //     return foundIds;
+    // }
+
+    // function _getParents(uint256[] memory blockIds) internal view returns (ParentInfo[] memory) {
+    //     ParentInfo[] storage parentBlocks;
+    //     for (uint256 i = 0; i < blockIds.length; i++) {
+    //         uint256[] memory parentIds = goldBlocks[blockIds[i]].parentIds;
+    //         if (parentIds.length == 0) {
+    //             parentBlocks.push(ParentInfo(blockIds[i], new ParentInfo[](0)));
+    //         } else {
+    //             parentBlocks.push(ParentInfo(blockIds[i], _getParents(parentIds)));
+    //         }
+    //     }
+    //     return parentBlocks;
+    // }
+
+    function getParentIds(uint256 blockId) public view returns (uint256[] memory) {
+        return goldBlocks[blockId].parentIds;
+    }
+
+    function getTransactionIds(uint256 blockId) public view returns (uint256[] memory) {
+        return goldBlocks[blockId].transactionIds;
     }
 
     event GoldBlockCreated(
