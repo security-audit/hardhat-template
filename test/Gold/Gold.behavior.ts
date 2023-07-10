@@ -4,25 +4,29 @@ import { expect } from "chai";
 
 function getMessageBytes(
   id: string,
-  str: string,
-  str2: string,
+  producer: string,
+  location: string,
   weight: number,
   time: number,
   parentIds: number[],
   type: number,
 ): Uint8Array {
   const message = keccak256(
-    ["string", "string", "string", "uint256", "uint256", "uint256[]", "uint8"],
-    [id, str, str2, weight, time, parentIds, type],
+    ["bytes", "bytes2", "bytes", "uint32", "uint256", "uint32[]", "uint8"],
+    [id, producer, location, weight, time, parentIds, type],
   );
   return arrayify(message);
 }
 
-const producer = "1";
-const location = "shenzhen";
+const strToHex = (str: string): string => {
+  return "0x" + Buffer.from(str, "utf8").toString("hex");
+};
+
+const producer = strToHex("AB");
+const location = strToHex("shenzhen");
 const weight = 100;
 const time = new Date().getTime();
-const id = "123";
+const id = strToHex("ABCDEFGH");
 const parentId = [0];
 const type = 0;
 
@@ -71,7 +75,7 @@ export function create(): void {
     const signature1 = await this.signers.admin.signMessage(signHash); // 签名
     try {
       // 故意签名不过。
-      await connect.createGoldBlock(id, producer, location + "n", weight, time, parentId, type, signature1);
+      await connect.createGoldBlock(id, producer, location, weight + 1, time, parentId, type, signature1);
 
       expect(true).to.equal(false);
     } catch (e: any) {
