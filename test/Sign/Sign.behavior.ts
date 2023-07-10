@@ -1,6 +1,7 @@
 // import { keccak256 } from "@ethersproject/keccak256";
 import { arrayify } from "@ethersproject/bytes";
 import { keccak256 } from "@ethersproject/solidity";
+import { toUtf8Bytes, toUtf8String } from "@ethersproject/strings";
 import { expect } from "chai";
 
 function toEthSignedMessageHash(str: string): string {
@@ -43,5 +44,31 @@ export function ping(): void {
     const signature1 = await this.signers.admin.signMessage(signHash); // 获取签名
     const signer1 = await this.Sign.connect(this.signers.admin).checkAddress(str, str2, signature1);
     expect(signer1).to.equal(await this.signers.admin.getAddress());
+  });
+
+  it("test bytes", async function () {
+    const a = "abc";
+    const buf = toUtf8Bytes(a); // abc转成字节，字母==>ASCII码，ASCII用uint8(0-255)表示。uint8就是一个字节8个bit的十进制表示
+    // console.log(buf); // buf是一个Uint8Array，所以合约中的bytes类型就是uint8[]，也就是一个字节数组. 0x616263
+    const connect = await this.Sign.connect(this.signers.admin);
+    const b = await connect.setBytes(buf);
+    expect(toUtf8String(b)).to.equal(a);
+    // b.toString;
+  });
+
+  it("test bytes3", async function () {
+    const a = "abc";
+    const buf = toUtf8Bytes(a); // abc转成字节，字母==>ASCII码，ASCII用uint8(0-255)表示。uint8就是一个字节8个bit的十进制表示
+    // console.log(buf); // buf是一个Uint8Array，所以合约中的bytes类型就是uint8[]，也就是一个字节数组. 0x616263
+    const connect = await this.Sign.connect(this.signers.admin);
+    const b = await connect.setBytes3(buf);
+    expect(toUtf8String(b)).to.equal(a);
+    // b.toString;
+  });
+
+  it("test emun", async function () {
+    const connect = await this.Sign.connect(this.signers.admin);
+    const b = await connect.getGoldType();
+    expect(b).to.equal(0);
   });
 }

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.4;
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "solidity-bytes-utils/contracts/BytesLib.sol";
 import { console } from "hardhat/console.sol";
 
 contract Sign {
@@ -42,8 +43,8 @@ contract Sign {
         return greeting;
     }
 
-    function encode(string memory msg) public pure returns (bytes32) {
-        return keccak256(abi.encodePacked(msg));
+    function encode(string memory d) public pure returns (bytes32) {
+        return keccak256(abi.encodePacked(d));
     }
 
     function checkAddress(
@@ -56,8 +57,8 @@ contract Sign {
         return keccak256(abi.encodePacked(str1, str2)).toEthSignedMessageHash().recover(signature);
     }
 
-    function getEtherSignHash(string memory msg) public pure returns (bytes32) {
-        bytes32 ethSignedMessageHash = keccak256(abi.encodePacked(msg));
+    function getEtherSignHash(string memory d) public pure returns (bytes32) {
+        bytes32 ethSignedMessageHash = keccak256(abi.encodePacked(d));
         return ECDSA.toEthSignedMessageHash(ethSignedMessageHash);
     }
 
@@ -69,5 +70,41 @@ contract Sign {
     function reSet() public {
         console.log("reset greeting  to '%s'", _init);
         greeting = _init;
+    }
+
+    function setBytes(bytes memory _bytes) public pure returns (bytes memory) {
+        // console.logBytes(_bytes);
+        bytes memory b = bytes("abc");
+        bytes1 a = bytes1("a");
+        require(BytesLib.equal(b, _bytes), "not equal");
+        require(_bytes[0] == a, "not equal");
+        require(_bytes[1] == hex"62", "not equal");
+        require(_bytes.length == 3, "not equal");
+
+        bytes2 c = bytes2("ab");
+        require(c.length == 2, "not equal");
+        require(c[0] == hex"61", "not equal");
+        require(c[1] == hex"62", "not equal");
+        return bytes("abc");
+    }
+
+    function setBytes3(bytes3 _bytes) public pure returns (bytes3) {
+        // console.logBytes3(_bytes);
+        bytes3 b = bytes3("abc");
+        // require(BytesLib.equal(b, _bytes), "not equal");
+        require(b == _bytes, "not equal");
+        require(_bytes[0] == hex"61", "not equal"); // a
+        require(_bytes[1] == hex"62", "not equal"); // b
+        require(_bytes[2] == hex"63", "not equal"); // c
+        return bytes3("abc");
+    }
+
+    enum GoldType {
+        GoldBlock,
+        GoldProduct
+    }
+
+    function getGoldType() public pure returns (GoldType) {
+        return GoldType.GoldBlock;
     }
 }

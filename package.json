@@ -89,6 +89,7 @@
     "build": "npm run compile && npm run typechain"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.8.2"
+    "@openzeppelin/contracts": "^4.8.2",
+    "solidity-bytes-utils": "^0.8.0"
   }
 }
