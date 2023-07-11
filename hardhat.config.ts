@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import "@nomicfoundation/hardhat-toolbox";
 import { config as dotenvConfig } from "dotenv";
+import "hardhat-gas-reporter";
 import type { HardhatUserConfig } from "hardhat/config";
 import type { NetworkUserConfig } from "hardhat/types";
 import { resolve } from "path";
@@ -142,6 +143,12 @@ const config: HardhatUserConfig = {
   typechain: {
     outDir: "types",
     target: "ethers-v5",
+  },
+  gasReporter: {
+    currency: "USD",
+    enabled: true,
+    coinmarketcap: process.env.COINMARKETCAP_API_KEY,
+    // gasPrice: 21,
   },
 };
 
