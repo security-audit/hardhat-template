@@ -99,6 +99,18 @@ contract Sign {
         return bytes3("abc");
     }
 
+    function getTime() public pure returns (uint256 a, uint b, uint c) {
+        uint n = 1;
+        a = n + 1 seconds;
+        b = n + 1 minutes;
+        c = n + 1 hours;
+    }
+
+    function getBool(bool x) public pure returns (bool) {
+        // console.logUint(address(this).balance);
+        return !x;
+    }
+
     enum GoldType {
         GoldBlock,
         GoldProduct
