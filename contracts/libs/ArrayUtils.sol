@@ -2,7 +2,7 @@
 pragma solidity ^0.8.4;
 
 library ArrayUtils {
-    function removeValue(uint32[] memory array, uint32 value) public pure returns (uint32[] memory) {
+    function removeValue(uint32[] memory array, uint32 value) internal pure returns (uint32[] memory) {
         uint32 count = 0;
 
         // 计算新数组的长度

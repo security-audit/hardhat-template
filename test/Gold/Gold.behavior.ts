@@ -64,7 +64,7 @@ export function create(): void {
       await connect.createGoldBlock(id, producer, location, weight, time, parentId, type, signature1);
       expect(true).to.equal(false);
     } catch (e: any) {
-      expect(e.message).to.equal(
+      expect(e.message).to.contain(
         "VM Exception while processing transaction: reverted with reason string 'ID already used'",
       );
     }
@@ -79,7 +79,7 @@ export function create(): void {
 
       expect(true).to.equal(false);
     } catch (e: any) {
-      expect(e.message).to.equal(
+      expect(e.message).to.contain(
         "VM Exception while processing transaction: reverted with reason string 'Invalid signature'",
       );
     }
@@ -93,7 +93,7 @@ export function create(): void {
       await user0.createGoldBlock(id, producer, location, weight, time, parentId, type, signature1);
       expect(true).to.equal(false);
     } catch (e: any) {
-      expect(e.message).to.equal(
+      expect(e.message).to.contain(
         "VM Exception while processing transaction: reverted with reason string 'Invalid signature'",
       );
     }
@@ -164,7 +164,7 @@ export function transaction(): void {
       await connect.transferGoldBlock(1, to); // 再次转移
       expect(true).to.equal(false);
     } catch (e: any) {
-      expect(e.message).to.equal(
+      expect(e.message).to.contain(
         "VM Exception while processing transaction: reverted with reason string 'Not authorized'",
       );
     }
@@ -179,7 +179,7 @@ export function transaction(): void {
       await connect.transferGoldBlock(1, to);
       expect(true).to.equal(false);
     } catch (e: any) {
-      expect(e.message).to.equal(
+      expect(e.message).to.contain(
         "VM Exception while processing transaction: reverted with reason string 'Gold block does not exist'",
       );
     }
@@ -196,7 +196,7 @@ export function transaction(): void {
       await user0.transferGoldBlock(1, to);
       expect(true).to.equal(false);
     } catch (e: any) {
-      expect(e.message).to.equal(
+      expect(e.message).to.contain(
         "VM Exception while processing transaction: reverted with reason string 'Not authorized'",
       );
     }

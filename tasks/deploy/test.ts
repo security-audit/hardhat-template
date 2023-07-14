@@ -25,34 +25,42 @@ function getMessageBytes(
 const strToHex = (str: string): string => {
   return "0x" + Buffer.from(str, "utf8").toString("hex");
 };
-
+const contractsAddress = "0x872073f14302B1B7B62E1c7719B8B7249A79dd92";
 const producer = strToHex("AB");
 const location = strToHex("shenzhen");
-const weight = 100;
+const weight = 200;
 const time = new Date().getTime();
-const id = strToHex("ABCDEFGH");
+const id = strToHex("ABCDEFG2");
 const parentId = [0];
 const type = 0;
 
 const signHash = getMessageBytes(id, producer, location, weight, time, parentId, type); // 对签名数据进行转换
 
-task("test:gold").setAction(async function (taskArguments: TaskArguments, { ethers }) {
+task("gold:create").setAction(async function (taskArguments: TaskArguments, { ethers }) {
   const signers: SignerWithAddress[] = await ethers.getSigners();
   const admin = signers[0];
   const hash = await admin.signMessage(signHash);
-  console.log(hash);
-  console.log(await admin.getBalance());
 
-  // const provider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
-  // const wallet = new ethers.Wallet(admin.privateKey, provider);
-
-  const contracts = new ethers.Contract("0x26eCBdf0FaE5e9B20Ae7854A327AF4556E3b8a6f", Info.abi, admin);
-  // await contracts.createGoldBlock(id, producer, location, weight, time, parentId, type, hash);
+  const contracts = new ethers.Contract(contractsAddress, Info.abi, admin);
+  await contracts.createGoldBlock(id, producer, location, weight, time, parentId, type, hash);
   const log = await contracts.goldBlocks(1);
   console.log(log);
 });
 
-task("test:gold2").setAction(async function () {
-  // const signers: SignerWithAddress[] = await ethers.getSigners();
-  console.log(Info.abi);
+task("gold:get").setAction(async function (taskArguments: TaskArguments, { ethers }) {
+  const signers: SignerWithAddress[] = await ethers.getSigners();
+  const admin = signers[0];
+
+  const contracts = new ethers.Contract(contractsAddress, Info.abi, admin);
+  const log = await contracts.goldBlocks(1);
+  console.log(log);
+});
+
+task("gold:getVersion").setAction(async function (taskArguments: TaskArguments, { ethers }) {
+  const signers: SignerWithAddress[] = await ethers.getSigners();
+  const admin = signers[0];
+
+  const contracts = new ethers.Contract(contractsAddress, Info.abi, admin);
+  const log = await contracts.getVersion();
+  console.log(log);
 });

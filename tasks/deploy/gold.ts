@@ -2,30 +2,28 @@ import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { task } from "hardhat/config";
 import type { TaskArguments } from "hardhat/types";
 
-import type { GoldTraceability as IT } from "../../types/contracts/GoldTraceability";
+// import type { GoldTraceability as IT } from "../../types/contracts/GoldTraceability";
 import type { GoldTraceability__factory as IFT } from "../../types/factories/contracts/GoldTraceability__factory";
-
-// import Info from "./gold.json";
 
 task("deploy:gold")
   // .addParam("greeting", "Say hello, be nice")
   .setAction(async function (taskArguments: TaskArguments, { ethers, upgrades }) {
-    const signers: SignerWithAddress[] = await ethers.getSigners();
-
-    // 部署ArrayUtils
-    const ArrayUtilsFactory = await ethers.getContractFactory("ArrayUtils");
-    const ArrayUtils = await ArrayUtilsFactory.deploy();
+    // const signers: SignerWithAddress[] = await ethers.getSigners();
 
     const greeterFactory: IFT = <IFT>await ethers.getContractFactory("GoldTraceability", {
-      libraries: {
-        ArrayUtils: ArrayUtils.address,
-      },
+      libraries: {},
     });
-    const greeter: IT = <IT>await greeterFactory.connect(signers[0]).deploy();
-    await greeter.deployed();
-    console.log("Greeter deployed to: ", greeter.address);
+
+    const box = await upgrades.deployProxy(greeterFactory);
+    await box.deployed();
+    console.log("Box deployed to:", await box.address);
   });
 
-task("upgrade:gold", "test").setAction(async function () {
-  console.log("3asdf");
+task("upgrades:gold", "test").setAction(async function (taskArguments: TaskArguments, { ethers, upgrades }) {
+  const greeterFactory: IFT = <IFT>await ethers.getContractFactory("GoldTraceability", {
+    libraries: {},
+  });
+  const BOX_ADDRESS = "0x872073f14302B1B7B62E1c7719B8B7249A79dd92";
+  const box = await upgrades.upgradeProxy(BOX_ADDRESS, greeterFactory);
+  console.log("Upgrading Box...", box);
 });

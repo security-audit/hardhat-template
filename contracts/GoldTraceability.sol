@@ -1,47 +1,13 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity >=0.8.4;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+
 import "./libs/ArrayUtils.sol";
 
-// library ArrayUtils {
-//     function removeValue(uint32[] memory array, uint32 value) public pure returns (uint32[] memory) {
-//         uint32 count = 0;
-
-//         // 计算新数组的长度
-//         for (uint32 i = 0; i < array.length; i++) {
-//             if (array[i] != value) {
-//                 count++;
-//             }
-//         }
-
-//         // 创建新的动态数组
-//         uint32[] memory newArray = new uint32[](count);
-//         uint32 index = 0;
-
-//         // 复制不等于目标值的元素到新数组中
-//         for (uint32 i = 0; i < array.length; i++) {
-//             if (array[i] != value) {
-//                 newArray[index] = array[i];
-//                 index++;
-//             }
-//         }
-
-//         return newArray;
-//     }
-
-//     function append(uint32[] memory A, uint32 B) internal pure returns (uint32[] memory) {
-//         uint32[] memory newAddresses = new uint32[](A.length + 1);
-//         for (uint32 i = 0; i < A.length; i++) {
-//             newAddresses[i] = A[i];
-//         }
-//         newAddresses[A.length] = B;
-//         return newAddresses;
-//     }
-// }
-
-contract GoldTraceability is Ownable {
+contract GoldTraceability is OwnableUpgradeable {
     using ECDSA for bytes32;
     enum GoldType {
         GoldBlock,
@@ -77,9 +43,10 @@ contract GoldTraceability is Ownable {
     uint32 private nextBlockId;
     uint32 private nextTransactionId;
 
-    constructor() {
+    function initialize() public initializer {
         nextBlockId = 1;
         nextTransactionId = 1;
+        __Ownable_init();
     }
 
     modifier onlyAuthorized(uint32 blockId) {
@@ -246,6 +213,10 @@ contract GoldTraceability is Ownable {
 
     function getTransactionIds(uint32 blockId) public view returns (uint32[] memory) {
         return goldBlocks[blockId].transactionIds;
+    }
+
+    function getVersion() public pure returns (string memory) {
+        return "v1.0.2";
     }
 
     event GoldBlockCreated(
