@@ -158,6 +158,10 @@ Deploy the contracts to Hardhat Network:
 $ yarn deploy --greeting "Bonjour, le monde!"
 $ npx hardhat deploy:GameItem --network polygon-mumbai
 $ npx hardhat deploy:GameItem --network bscTestnet
+# 部署合约
+$ npx hardhat deploy:gold --network localhost
+# 升级合约
+$ npx hardhat upgrades:gold --network localhost
 ```
 
 ### Verify
