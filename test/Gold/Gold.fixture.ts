@@ -2,7 +2,7 @@ import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signe
 import { ethers } from "hardhat";
 
 import type { GoldTraceability } from "../../types/";
-import type { GoldTraceability__factory } from "../../types/factories/contracts/GoldTraceability.sol/GoldTraceability__factory";
+import type { GoldTraceability__factory } from "../../types/factories/contracts/GoldTraceability__factory";
 
 type IM = GoldTraceability;
 type IMF = GoldTraceability__factory;
