@@ -4,6 +4,7 @@ import type { TaskArguments } from "hardhat/types";
 
 // import type { GoldTraceability as IT } from "../../types/contracts/GoldTraceability";
 import type { GoldTraceability__factory as IFT } from "../../types/factories/contracts/GoldTraceability__factory";
+import { CONFIG } from "./gold.config";
 
 task("deploy:gold")
   // .addParam("greeting", "Say hello, be nice")
@@ -14,7 +15,9 @@ task("deploy:gold")
       libraries: {},
     });
 
-    const box = await upgrades.deployProxy(greeterFactory);
+    const box = await upgrades.deployProxy(greeterFactory, {
+      kind: "uups",
+    });
     await box.deployed();
     console.log("Box deployed to:", await box.address);
   });
@@ -23,7 +26,9 @@ task("upgrades:gold", "test").setAction(async function (taskArguments: TaskArgum
   const greeterFactory: IFT = <IFT>await ethers.getContractFactory("GoldTraceability", {
     libraries: {},
   });
-  const BOX_ADDRESS = "0x872073f14302B1B7B62E1c7719B8B7249A79dd92";
-  const box = await upgrades.upgradeProxy(BOX_ADDRESS, greeterFactory);
+  const BOX_ADDRESS = CONFIG.address;
+  const box = await upgrades.upgradeProxy(BOX_ADDRESS, greeterFactory, {
+    kind: "uups",
+  });
   console.log("Upgrading Box...", box);
 });

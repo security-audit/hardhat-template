@@ -4,10 +4,11 @@ pragma solidity >=0.8.4;
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 import "./libs/ArrayUtils.sol";
 
-contract GoldTraceability is OwnableUpgradeable {
+contract GoldTraceability is Initializable, UUPSUpgradeable, OwnableUpgradeable {
     using ECDSA for bytes32;
     enum GoldType {
         GoldBlock,
@@ -47,7 +48,10 @@ contract GoldTraceability is OwnableUpgradeable {
         nextBlockId = 1;
         nextTransactionId = 1;
         __Ownable_init();
+        __UUPSUpgradeable_init();
     }
+
+    function _authorizeUpgrade(address) internal override onlyOwner {}
 
     modifier onlyAuthorized(uint32 blockId) {
         require(goldBlocks[blockId].owner == msg.sender || authorizedUsers[blockId][msg.sender], "Not authorized");
@@ -216,7 +220,7 @@ contract GoldTraceability is OwnableUpgradeable {
     }
 
     function getVersion() public pure returns (string memory) {
-        return "v1.0.2";
+        return "v1.0.5";
     }
 
     event GoldBlockCreated(

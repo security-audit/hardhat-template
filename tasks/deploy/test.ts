@@ -4,6 +4,7 @@ import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { task } from "hardhat/config";
 import type { TaskArguments } from "hardhat/types";
 
+import { CONFIG } from "./gold.config";
 import Info from "./gold.json";
 
 function getMessageBytes(
@@ -25,7 +26,7 @@ function getMessageBytes(
 const strToHex = (str: string): string => {
   return "0x" + Buffer.from(str, "utf8").toString("hex");
 };
-const contractsAddress = "0x872073f14302B1B7B62E1c7719B8B7249A79dd92";
+const contractsAddress = CONFIG.address;
 const producer = strToHex("AB");
 const location = strToHex("shenzhen");
 const weight = 200;

@@ -19,7 +19,9 @@ export async function deployGreeterFixture(): Promise<IM> {
   // const greeter: IM = <IM>await greeterFactory.connect(admin).deploy();
   // await greeter.deployed();
 
-  const greeter = <IM>await upgrades.deployProxy(greeterFactory);
+  const greeter = <IM>await upgrades.deployProxy(greeterFactory, {
+    kind: "uups",
+  });
   await greeter.deployed();
   return greeter;
 }
