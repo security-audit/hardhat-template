@@ -1,4 +1,4 @@
 import "./gameitem";
-import "./gold.ts";
+import "./gold/gold";
+import "./gold/test";
 import "./greeter";
-import "./test";

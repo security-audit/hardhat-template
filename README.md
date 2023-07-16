@@ -170,6 +170,8 @@ $ npx hardhat upgrades:gold --network localhost
 $npx hardhat verify --contract "contracts/GameItem.sol:GameItem" 0x055AA93F9509e106544AF5D8872E0708831d83E9 --network polygon-mumbai
 $npx hardhat verify --contract "contracts/GameItem.sol:GameItem" 0xbF24351D0a0578aFD74e44Fa1020A6641142A50B --network bscTestnet
 $npx hardhat verify --contract "contracts/core/EntryPoint.sol:EntryPoint" 0x0576a174D229E3cFA37253523E645A78A0C91B57
+
+$npx hardhat verify --contract "contracts/GoldTraceability.sol:GoldTraceability" 0xEa91fc883182e98b1d6c1f0d7705b3ECEAF76522 --network polygon-mumbai
 ```
 
 ## Tips

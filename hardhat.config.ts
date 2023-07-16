@@ -43,11 +43,10 @@ function getChainConfig(chain: keyof typeof chainIds): NetworkUserConfig {
     return {};
   }
   let jsonRpcUrl: string;
-  let key: string;
+  const key: string = process.env.LOCAL_PRIVATE_KEY as string;
   switch (chain) {
     case "hardhat":
       jsonRpcUrl = "http://127.0.0.1:8545/";
-      key = process.env.LOCAL_PRIVATE_KEY as string;
       break;
     case "avalanche":
       jsonRpcUrl = "https://api.avax.network/ext/bc/C/rpc";
@@ -57,24 +56,25 @@ function getChainConfig(chain: keyof typeof chainIds): NetworkUserConfig {
       break;
     case "bscTestnet":
       jsonRpcUrl = "https://endpoints.omniatech.io/v1/bsc/testnet/public";
-      key = process.env.LOCAL_PRIVATE_KEY as string;
       break;
     case "polygon-mainnet":
       jsonRpcUrl = "https://polygon-mainnet.infura.io";
       break;
     case "polygon-mumbai":
-      jsonRpcUrl = "https://matic-mumbai.chainstacklabs.com";
+      // jsonRpcUrl = "https://matic-mumbai.chainstacklabs.com";
+      jsonRpcUrl = "https://endpoints.omniatech.io/v1/matic/mumbai/public";
+      // key = process.env.LOCAL_PRIVATE_KEY as string;
       break;
     default:
       jsonRpcUrl = "https://" + chain + ".infura.io/v3/" + infuraApiKey;
   }
   return {
-    accounts: {
-      count: 10,
-      mnemonic,
-      path: "m/44'/60'/0'/0",
-    },
-    // accounts:[key],
+    // accounts: {
+    //   count: 10,
+    //   mnemonic,
+    //   path: "m/44'/60'/0'/0",
+    // },
+    accounts: [key],
     chainId: chainIds[chain],
     url: jsonRpcUrl,
   };

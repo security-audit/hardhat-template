@@ -177,40 +177,6 @@ contract GoldTraceability is Initializable, UUPSUpgradeable, OwnableUpgradeable 
         }
     }
 
-    // struct ParentInfo {
-    //     uint256 blockId;
-    //     uint256[] parents;
-    // }
-
-    // function getParentBlocks(uint256 blockId) external view returns (uint256[] memory) {
-    //     uint256[] memory parentBlocks;
-    //     // uint256[] memory currentBlockId = new uint256[](blockId);
-    //     // currentBlockId.push(blockId);
-    //     ParentInfo[] storage foundIds;
-    //     // while (true) {
-    //     for (uint j = 0; j < blockIds.length; j++) {
-    //         // uint256[] storage nextIds = goldBlocks[currentBlockId[j]].parentIds;
-    //         uint256[] memory parentIds = goldBlocks[blockIds[j]].parentIds;
-
-    //         foundIds.push(ParentInfo(blockIds[j], _getParents(parentIds)));
-    //     }
-    //     // }
-    //     return foundIds;
-    // }
-
-    // function _getParents(uint256[] memory blockIds) internal view returns (ParentInfo[] memory) {
-    //     ParentInfo[] storage parentBlocks;
-    //     for (uint256 i = 0; i < blockIds.length; i++) {
-    //         uint256[] memory parentIds = goldBlocks[blockIds[i]].parentIds;
-    //         if (parentIds.length == 0) {
-    //             parentBlocks.push(ParentInfo(blockIds[i], new ParentInfo[](0)));
-    //         } else {
-    //             parentBlocks.push(ParentInfo(blockIds[i], _getParents(parentIds)));
-    //         }
-    //     }
-    //     return parentBlocks;
-    // }
-
     function getParentIds(uint32 blockId) public view returns (uint32[] memory) {
         return goldBlocks[blockId].parentIds;
     }
@@ -220,7 +186,11 @@ contract GoldTraceability is Initializable, UUPSUpgradeable, OwnableUpgradeable 
     }
 
     function getVersion() public pure returns (string memory) {
-        return "v1.0.5";
+        return "v1.0.8";
+    }
+
+    function getNextId() public view returns (uint32) {
+        return nextBlockId;
     }
 
     event GoldBlockCreated(

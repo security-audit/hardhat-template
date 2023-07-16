@@ -1,11 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { arrayify } from "@ethersproject/bytes";
 import { keccak256 } from "@ethersproject/solidity";
 import type { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { task } from "hardhat/config";
 import type { TaskArguments } from "hardhat/types";
 
+import Info from "./gold.abi.json";
 import { CONFIG } from "./gold.config";
-import Info from "./gold.json";
 
 function getMessageBytes(
   id: string,
@@ -26,12 +27,13 @@ function getMessageBytes(
 const strToHex = (str: string): string => {
   return "0x" + Buffer.from(str, "utf8").toString("hex");
 };
-const contractsAddress = CONFIG.address;
+// const contractsAddress = CONFIG.address;
+const contractsAddress = "0xEa91fc883182e98b1d6c1f0d7705b3ECEAF76522";
 const producer = strToHex("AB");
 const location = strToHex("shenzhen");
-const weight = 200;
+const weight = 300;
 const time = new Date().getTime();
-const id = strToHex("ABCDEFG2");
+const id = strToHex("ABCDEFG4");
 const parentId = [0];
 const type = 0;
 
