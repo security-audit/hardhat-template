@@ -6,7 +6,7 @@ import type { Signers } from "../types";
 import { create, deleteGold, queryGold, transaction } from "./Gold.behavior";
 import { deployGreeterFixture } from "./Gold.fixture";
 
-describe("Sign Unit tests", function () {
+describe("Gold Unit tests", function () {
   before(async function () {
     this.signers = {} as Signers;
 
