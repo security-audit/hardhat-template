@@ -8,7 +8,10 @@
     "max-line-length": ["error", 120],
     "named-parameters-mapping": "warn",
     "no-console": "off",
+    "no-global-import": "off",
     "not-rely-on-time": "off",
+    "check-send-result": "error",
+    "reentrancy": "error",
     "prettier/prettier": [
       "error",
       {
